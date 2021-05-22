@@ -6,17 +6,14 @@
 
 -- purchase_historyテーブル作る
 -- history_idは自動
--- item_id、priceはitemテーブルから取ってくる
--- amountはcartテーブルから取ってくる
+-- createdはcartテーブルから取ってくる
+-- user_idはuserテーブルから取ってくる
 
 CREATE TABLE 'purchase_history' (
-    `history_id` int(11) NOT NULL AUTO_INCREMENT,
-    'item_id' int(11) NOT NULL,
-    `price` int(11) NOT NULL,
-    `amount` int(11) NOT NULL,
-    primary key(history_id)
+    `history_id` int(11) NOT NULL,
+    `created` datetime NOT NULL,
+    `user_id` int(11) NOT NULL,
 );
-
 
 
 -- 購入明細画面を作る
@@ -26,10 +23,13 @@ CREATE TABLE 'purchase_history' (
 
 -- order_detailsテーブル作る
 -- history_idはpurchase_historyテーブルから取ってくる
--- createdはcartテーブルから取ってくる
--- user_idはuserテーブルから取ってくる
+-- item_id、priceはitemテーブルから取ってくる
+-- amountはcartテーブルから取ってくる
+
 CREATE TABLE 'order_details' (
-    `history_id` int(11) NOT NULL,
-    `created` datetime NOT NULL,
-    `user_id` int(11) NOT NULL,
+    `history_id` int(11) NOT NULL AUTO_INCREMENT,
+    'item_id' int(11) NOT NULL,
+    `price` int(11) NOT NULL,
+    `amount` int(11) NOT NULL,
+    primary key(history_id)
 );
