@@ -10,9 +10,10 @@
 -- user_idはuserテーブルから取ってくる
 
 CREATE TABLE 'purchase_history' (
-    `history_id` int(11) NOT NULL,
+    `history_id` int(11) NOT NULL AUTO_INCREMENT,
     `created` datetime NOT NULL,
     `user_id` int(11) NOT NULL,
+    primary key(history_id)
 );
 
 
@@ -21,15 +22,14 @@ CREATE TABLE 'purchase_history' (
 -- 商品名、購入時の商品価格、購入数はpurchase_historyテーブルから取ってくる
 -- 小計は計算する
 
--- order_detailsテーブル作る
 -- history_idはpurchase_historyテーブルから取ってくる
+-- order_detailsテーブル作る
 -- item_id、priceはitemテーブルから取ってくる
 -- amountはcartテーブルから取ってくる
 
 CREATE TABLE 'order_details' (
-    `history_id` int(11) NOT NULL AUTO_INCREMENT,
+    `history_id` int(11) NOT NULL,
     'item_id' int(11) NOT NULL,
     `price` int(11) NOT NULL,
     `amount` int(11) NOT NULL,
-    primary key(history_id)
 );
