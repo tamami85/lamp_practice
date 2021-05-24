@@ -49,7 +49,7 @@ function get_order_details($db, $history_id){
 function get_total_price($db, $history_id){
     $sql = "
             SELECT
-                SUM(price) AS total_price,
+                SUM(price * amount) AS total_price,
                 order_details.history_id AS history_number,
                 purchase_history.created,
             FROM
@@ -70,7 +70,7 @@ function get_total_price($db, $history_id){
 function admin_get_total_price($db, $history_id){
     $sql = "
             SELECT
-                SUM(price) AS total_price,
+                SUM(price * amount) AS total_price,
                 order_details.history_id AS history_number,
                 purchase_history.created,
             FROM
