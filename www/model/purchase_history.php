@@ -49,3 +49,23 @@ function admin_get_purchase_history($db){
 }
 
 
+
+
+
+
+
+// どこに置くのか後で考えまひょ
+
+// 画面上部に該当の「注文番号」「購入日時」を表示する。
+$purchase_history = get_purchase_history($db, $user_id);
+foreach($purchase_history[0] as $value){
+    $value['history_id'];
+    $value['created'];
+}
+
+//画面上部に該当の「注文番号」「購入日時」を表示する。（管理者用）
+$admin_purchase_history = admin_get_purchase_history($db)
+foreach($admin_purchase_history[0] as $value){
+    $value['history_id'];
+    $value['created'];
+}
