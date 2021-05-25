@@ -8,7 +8,7 @@ require_once MODEL_PATH . 'purchase_history.php';
 // order_detailsテーブルに値を入れていく
 function add_order_details($db, $history_id, $item_id, $price, $amount){
     $sql = "
-            INSERT IMTO
+            INSERT INTO
                 order_details(
                     history_id,
                     item_id,
@@ -91,25 +91,22 @@ function admin_get_total_price($db, $history_id){
 }
 
 //トランザクションで購入履歴と購入明細を同時にインサート
-function insert_historical_transaction($db, $date, $user, $history_id, $item_id, $price, $amount){//
-    $carts = get_user_carts($db, $user['user_id']);
-    foreach($carts as $value){
-        $item_id = $value['item_id'];
-        $price = $value['price'];
-        $amount = $value['amount'];
-        
-        $date = date("Y-m-d H:i:s");
-        //履歴と明細のインサート
-        $db->beginTransaction();//トランザクション開始
-        if(add_purchase_history($db, $date, $user)
-            && add_order_details($db, $history_id, $item_id, $price, $amount) 
-        ){//購入履歴に値入れて、かつ、購入明細に値入れる
-            $db->commit();//コミットさん
-            return true;//できたな、おめ
+function insert_historical_transaction($db){//
+    add_purchase_history($db, $user_id);//まず購入履歴に値を入れる
+    //ここからは購入明細に値入れる
+    $purchase_history = get_purchase_history($db, $user_id);//購入履歴を配列で持ってくる
+    $carts = get_user_carts($db, $user['user_id']);//カートの中を配列で持ってくる
+    foreach($purchase_history as $value){//購入履歴ををぐるぐるしてhistory_idにあだ名つける
+        $history_id = $value['history_id'];
+        foreach($carts as $value){//カート内をぐるぐるして３つにあだ名つける
+            $item_id = $value['item_id'];
+            $price = $value['price'];
+            $amount = $value['amount'];
+            
+            add_order_details($db, $history_id, $item_id, $price, $amount);//購入明細にインサートする
         }
     }
-    $db->rollback();//振り出しに戻る
-    return false;//処理やめぴ
+        
 }//
 
 function validate_order_details($order_details){//購商品明細のバリデ関数
@@ -128,13 +125,13 @@ function validate_order_details($order_details){//購商品明細のバリデ関
 //     return true;//エラーなかったら、何事もなかったかのように澄まし顔
 // }
 
-function put_in_variables($db, $user){
-    $carts = get_user_carts($db, $user['user_id']);
-    foreach($carts as $value){
-        $item_id = $value['item_id'];
-        $price = $value['price'];
-        $amount = $value['amount'];
-    }
-    $date = date("Y-m-d H:i:s");
-}
+// function put_in_variables($db, $user){
+//     $carts = get_user_carts($db, $user['user_id']);
+//     foreach($carts as $value){
+//         $item_id = $value['item_id'];
+//         $price = $value['price'];
+//         $amount = $value['amount'];
+//     }
+//     $date = date("Y-m-d H:i:s");
+// }
 

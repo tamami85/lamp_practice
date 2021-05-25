@@ -16,12 +16,14 @@ if(is_logined() === false){
 
 $db = get_db_connect();
 $user = get_login_user($db);
+$user_id = $user['user_id'];
+
 
 $post_token = get_post('token');//ポストで隠されて来たトークンにあだ名つける
 is_valid_csrf_token($post_token);//ポストで来たトークンをバリデする
 
 $history = get_post('history');//履歴ボタンはちゃんと押されてるんか？
-is_valid_user_id($user);//$userつまり$user_idがちゃんと飛んできてるかチェック
+is_valid_user_id($user['user_id']);//$userつまり$user_idがちゃんと飛んできてるかチェック
 
 $carts = get_user_carts($db, $user['user_id']);//カート内に何が入ってるか配列で取得
 
@@ -36,7 +38,7 @@ if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきた�
     redirect_to(CART_URL);
   }
 
-  insert_historical_transaction($db, $date, $user_id, $history_id, $item_id, $price, $amount);
+  insert_historical_transaction($db, $user_id, $history_id);
   
 
 

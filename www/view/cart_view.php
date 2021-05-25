@@ -57,7 +57,7 @@
       <form method="post" action="finish.php">
         <input class="btn btn-block btn-primary" type="submit" value="購入する">
         <input type="hidden" name="token" value="<?php print $token; ?>">
-        <input type="hidden" name="history" value="<?php print $user; ?>">
+        <input type="hidden" name="history" value="<?php print $user_id; ?>">
       </form>
     <?php } else { ?>
       <p>カートに商品はありません。</p>

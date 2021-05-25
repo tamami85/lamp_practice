@@ -4,7 +4,10 @@ require_once MODEL_PATH . 'db.php';
 
 
 // purchase_historyテーブルにデータを新規登録する
-function add_purchase_history($db, $date, $user){
+function add_purchase_history($db, $user_id){
+    $date    = date("Y-m-d H:i:s");
+    // $user_id = $user['user_id'];
+
     $sql = "
             INSERT INTO
                 purchase_history(
@@ -14,12 +17,12 @@ function add_purchase_history($db, $date, $user){
             VALUES
                 (?, ?)
             ";
-    $params = array($date, $user);
+    $params = array($date, $user_id);
     return execute_query($db, $sql, $params);
 }
 
 // purchase_historyテーブルを表示する
-function get_purchase_history($db, $user){
+function get_purchase_history($db, $user_id){
     $sql = "
             SELECT
                 history_id,
@@ -30,7 +33,7 @@ function get_purchase_history($db, $user){
             WHERE
                 user_id = ?
             ";
-    $params = array($user);
+    $params = array($user_id);
     return fetch_all_query($db, $sql, $params);
 }
 
