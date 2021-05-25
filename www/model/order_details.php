@@ -1,6 +1,7 @@
 <?php 
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
+require_once MODEL_PATH . 'cart.php';
 
 // order_detailsテーブルに値を入れていく
 function add_order_details($db, $history_id, $item_id, $price, $amount){
@@ -46,12 +47,12 @@ function get_order_details($db, $history_id){
 }
 
 //合計金額の計算
-function get_total_price($db, $history_id){
+function get_total($db, $history_id){
     $sql = "
             SELECT
                 SUM(price * amount) AS total_price,
                 order_details.history_id AS history_number,
-                purchase_history.created,
+                purchase_history.created
             FROM
                 order_details
             LEFT OUTER JOIN
@@ -61,18 +62,20 @@ function get_total_price($db, $history_id){
             GROUP BY
                 history_id = ?              
             ";
+            //total_priceって名前で価格とかった量の合計を計算する
+            //history_numberって名前で明細のhistory_idを呼ぶ
+            //日付を取得
     $params = array($history_id);
     return fetch_query($db, $sql, $params);
 }
 
-
-//管理者用の配列取得
+// 管理者用の配列取得
 function admin_get_total_price($db, $history_id){
     $sql = "
             SELECT
                 SUM(price * amount) AS total_price,
                 order_details.history_id AS history_number,
-                purchase_history.created,
+                purchase_history.created
             FROM
                 order_details
             LEFT OUTER JOIN
@@ -85,36 +88,38 @@ function admin_get_total_price($db, $history_id){
     return fetch_all_query($db, $sql);
 }
 
-    
+//トランザクションで購入履歴と購入明細を同時にインサート
+function insert_historical_transaction($db, $date, $user, $history_id, $item_id, $price, $amount){//
+    forreach($carts as $value){
+        $item_id = $value['item_id'];
+        $price = $value['price'];
+        $amount = $value['amount'];
+    }
+    $db->beginTransaction();//トランザクション開始
+    if(add_purchase_history($db, $date, $user)
+        && add_order_details($db, $history_id, $item_id, $price, $amount) 
+       ){//購入履歴に値入れて、かつ、購入明細に値入れる
+      $db->commit();//コミットさん
+      return true;//できたな、おめ
+    }
+    $db->rollback();//振り出しに戻る
+    return false;//処理やめぴ
+}//
 
-
-
-
-// どこに置くのか後で考えまひょ
-
-
-// 明細の一覧表示(表示項目は「商品名」「購入時の商品価格」「購入数」「小計」とする。)
-$order_details = get_order_details($db, $history_id);//配列で明細を一気に取得してる
-foreach($order_details as $value){
-    $value['name'];//「商品名」
-    $value['price'];//「購入時の商品価格」 
-    $value['amount'];//「購入数」
+function validate_order_details($order_details){//購商品明細のバリデ関数
+    if(count($order_details) === 0){//明細が空やったら
+      set_error('購入明細を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+      return false;//処理やめぴ
+    }
+    return true;//エラーなかったら、何事もなかったかのように澄まし顔
 }
 
-//小計の表示
-$total_price['total_price'] = get_total_price($db, $history_id);//配列で１行取得したから、'該当の注文の合計金額'カラムの金額だけを抽出
-
-// 表示項目は「注文番号」「購入日時」「該当の注文の合計金額」とする。
-foreach($total_price as $value){
-    $value['history_number'];//「注文番号」
-    $value['created'];//「購入日時」 
-    $value['total_price'];//「該当の注文の合計金額」
+function validate_order_details($get_total){//購商品明細の商品のバリデ関数
+    if(count($get_total) === 0){//詳細が空やったら
+      set_error('購入明細の詳細を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+      return false;//処理やめぴ
+    }
+    return true;//エラーなかったら、何事もなかったかのように澄まし顔
 }
 
-// 表示項目は「注文番号」「購入日時」「該当の注文の合計金額」とする。（管理者用）
-$admin_total_price = admin_get_total_price($db, $history_id);
-foreach($admin_total_price as $value){
-    $value['history_number'];//「注文番号」
-    $value['created'];//「購入日時」 
-    $value['total_price'];//「該当の注文の合計金額」
-}
+

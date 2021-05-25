@@ -50,7 +50,7 @@ function get_user_cart($db, $user_id, $item_id){//どのアイテムか指定し
           carts.user_id = ?
         AND
           items.item_id = ?
-      ";////$user_idと$item_idは何かしらのidが入る
+      ";//$user_idと$item_idは何かしらのidが入る
   $params = array($user_id, $item_id);
   return fetch_query($db, $sql, $params);//取得した１行の情報を返す
 }

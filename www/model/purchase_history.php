@@ -4,7 +4,8 @@ require_once MODEL_PATH . 'db.php';
 
 
 // purchase_historyテーブルにデータを新規登録する
-function add_purchase_history($db, $date, $user_id){
+function add_purchase_history($db, $date, $user){
+    
     $sql = "
             INSERT IMTO
                 purchase_history(
@@ -14,10 +15,9 @@ function add_purchase_history($db, $date, $user_id){
             VALUES
                 (?, ?)
             ";
-    $params = array($date, $user_id);
+    $params = array($date, $user);
     return execute_query($db, $sql, $params);
 }
-
 
 // purchase_historyテーブルを表示する
 function get_purchase_history($db, $user_id){
@@ -31,7 +31,7 @@ function get_purchase_history($db, $user_id){
             WHERE
                 user_id = ?
             ";
-    $params = array($user_id);
+    $params = array($user);
     return fetch_all_query($db, $sql, $params);
 }
 
@@ -48,24 +48,25 @@ function admin_get_purchase_history($db){
     return fetch_all_query($db, $sql);
 }
 
+//購入履歴の配列にあだ名つける
+function validate_purchase_history($purchase_history){//購商品履歴のバリデ関数
+    if(count($purchase_history) === 0){//履歴が空やったら
+      set_error('購入履歴を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+      return false;//処理やめぴ
+    }
+    return true;//エラーなかったら、何事もなかったかのように澄まし顔
+}
+
+//管理者用の購入履歴の配列にあだ名つける
+function validate_purchase_history($admin_purchase_history){//購商品履歴のバリデ関数
+    if(count($admin_purchase_history) === 0){//履歴が空やったら
+      set_error('購入履歴を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+      return false;//処理やめぴ
+    }
+    return true;//エラーなかったら、何事もなかったかのように澄まし顔
+}
 
 
 
 
 
-
-// どこに置くのか後で考えまひょ
-
-// 画面上部に該当の「注文番号」「購入日時」を表示する。
-// $purchase_history = get_purchase_history($db, $user_id);
-// foreach($purchase_history[0] as $value){
-//     $value['history_id'];
-//     $value['created'];
-// }
-
-//画面上部に該当の「注文番号」「購入日時」を表示する。（管理者用）
-// $admin_purchase_history = admin_get_purchase_history($db)
-// foreach($admin_purchase_history[0] as $value){
-//     $value['history_id'];
-//     $value['created'];
-// }

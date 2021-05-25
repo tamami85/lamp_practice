@@ -17,7 +17,11 @@ $user = get_login_user($db);
 $post_token = get_post('token');//ポストで隠されて来たトークンにあだ名つける
 is_valid_csrf_token($post_token);//ポストで来たトークンをバリデする
 
+$history = get_post('history');//履歴ボタンはちゃんと押されてるんか？
+is_valid_user_id($user);//$userつまり$user_idがちゃんと飛んできてるかチェック
+
 $carts = get_user_carts($db, $user['user_id']);
+
 
 if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきたトークンがバリデしたけどfalseで返してきよったら（つまりポストされたやつとセッションに入ってるやつが一致せんかったら
   set_error('不正な処理が行われました');//セッション箱のエラーのとこに入れる
@@ -29,12 +33,26 @@ if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきた�
     set_error('商品が購入できませんでした。');
     redirect_to(CART_URL);
   }
+  //履歴と明細のインサート
+  insert_historical_transaction($db, $date, $user_id, $history_id, $item_id, $price, $amount);
 
+  if(is_admin($user)){//もし管理者がログインしてたら
+    $admin_purchase_history = admin_get_purchase_history($db);//取得した配列に$admin_purchase_historyっていうあだ名つける
+    validate_purchase_history($admin_purchase_history);//バリデ
+  }else{//管理者以外がログインしてたら
+    $purchase_history = get_purchase_history($db, $user_id);//取得した配列に$purchase_historyっていうあだ名つける
+    validate_purchase_history($purchase_history);//バリデ
+  }
+  
 $_SESSION['csrf_token'] = '';//トークンの破棄
 get_csrf_token();//トークンまた新しく作る
 }
 
 
 $total_price = sum_carts($carts);
+
+
+
+
 
 include_once '../view/finish_view.php';
