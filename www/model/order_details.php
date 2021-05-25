@@ -91,14 +91,13 @@ function admin_get_total_price($db, $history_id){
 }
 
 //トランザクションで購入履歴と購入明細を同時にインサート
-function insert_historical_transaction($db){//
-    add_purchase_history($db, $user_id);//まず購入履歴に値を入れる
+function insert_order_details($db){//
     //ここからは購入明細に値入れる
-    $purchase_history = get_purchase_history($db, $user_id);//購入履歴を配列で持ってくる
-    $carts = get_user_carts($db, $user['user_id']);//カートの中を配列で持ってくる
-    foreach($purchase_history as $value){//購入履歴ををぐるぐるしてhistory_idにあだ名つける
+    // $purchase_history = get_purchase_history($db, $user_id);//購入履歴を配列で持ってくる
+    // $carts = get_user_carts($db, $user['user_id']);//カートの中を配列で持ってくる
+    foreach($purchase_history[0] as $value){//購入履歴ををぐるぐるしてhistory_idにあだ名つける
         $history_id = $value['history_id'];
-        foreach($carts as $value){//カート内をぐるぐるして３つにあだ名つける
+        foreach($carts[0] as $value){//カート内をぐるぐるして３つにあだ名つける
             $item_id = $value['item_id'];
             $price = $value['price'];
             $amount = $value['amount'];

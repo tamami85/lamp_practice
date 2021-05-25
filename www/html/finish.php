@@ -38,7 +38,11 @@ if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきた�
     redirect_to(CART_URL);
   }
 
-  insert_historical_transaction($db, $user_id, $history_id);
+  add_purchase_history($db, $user_id);//まず購入履歴に値を入れる
+
+  $purchase_history = get_purchase_history($db, $user_id);//購入履歴を配列で持ってくる
+print_r($purchase_history);
+  insert_order_details($db);//からの商品明細に値入れる
   
 
 

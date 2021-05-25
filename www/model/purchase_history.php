@@ -5,9 +5,7 @@ require_once MODEL_PATH . 'db.php';
 
 // purchase_historyテーブルにデータを新規登録する
 function add_purchase_history($db, $user_id){
-    $date    = date("Y-m-d H:i:s");
-    // $user_id = $user['user_id'];
-
+    $date = date("Y-m-d H:i:s");
     $sql = "
             INSERT INTO
                 purchase_history(
