@@ -90,11 +90,7 @@ function admin_get_total_price($db, $history_id){
 
 //トランザクションで購入履歴と購入明細を同時にインサート
 function insert_historical_transaction($db, $date, $user, $history_id, $item_id, $price, $amount){//
-    forreach($carts as $value){
-        $item_id = $value['item_id'];
-        $price = $value['price'];
-        $amount = $value['amount'];
-    }
+    put_in_variables($db, $user);//変数に何が入るんかこの関数で定義
     $db->beginTransaction();//トランザクション開始
     if(add_purchase_history($db, $date, $user)
         && add_order_details($db, $history_id, $item_id, $price, $amount) 
@@ -114,12 +110,21 @@ function validate_order_details($order_details){//購商品明細のバリデ関
     return true;//エラーなかったら、何事もなかったかのように澄まし顔
 }
 
-function validate_order_details($get_total){//購商品明細の商品のバリデ関数
-    if(count($get_total) === 0){//詳細が空やったら
-      set_error('購入明細の詳細を取得できませんでした。');//セッション箱にエラーメッセージ入れる
-      return false;//処理やめぴ
-    }
-    return true;//エラーなかったら、何事もなかったかのように澄まし顔
-}
+// function validate_get_total($get_total){//購商品明細の商品のバリデ関数
+//     if(count($get_total) === 0){//詳細が空やったら
+//       set_error('購入明細の詳細を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+//       return false;//処理やめぴ
+//     }
+//     return true;//エラーなかったら、何事もなかったかのように澄まし顔
+// }
 
+function put_in_variables($db, $user){
+    $carts = get_user_carts($db, $user);
+    foreach($carts as $value){
+        $item_id = $value['item_id'];
+        $price = $value['price'];
+        $amount = $value['amount'];
+    }
+    $date = date("Y-m-d H:i:s");
+}
 

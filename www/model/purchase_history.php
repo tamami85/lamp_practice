@@ -5,9 +5,8 @@ require_once MODEL_PATH . 'db.php';
 
 // purchase_historyテーブルにデータを新規登録する
 function add_purchase_history($db, $date, $user){
-    
     $sql = "
-            INSERT IMTO
+            INSERT INTO
                 purchase_history(
                     created,
                     user_id
@@ -57,14 +56,14 @@ function validate_purchase_history($purchase_history){//購商品履歴のバリ
     return true;//エラーなかったら、何事もなかったかのように澄まし顔
 }
 
-//管理者用の購入履歴の配列にあだ名つける
-function validate_purchase_history($admin_purchase_history){//購商品履歴のバリデ関数
-    if(count($admin_purchase_history) === 0){//履歴が空やったら
-      set_error('購入履歴を取得できませんでした。');//セッション箱にエラーメッセージ入れる
-      return false;//処理やめぴ
-    }
-    return true;//エラーなかったら、何事もなかったかのように澄まし顔
-}
+// //管理者用の購入履歴の配列にあだ名つける
+// function validate_purchase_history($admin_purchase_history){//購商品履歴のバリデ関数
+//     if(count($admin_purchase_history) === 0){//履歴が空やったら
+//       set_error('購入履歴を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+//       return false;//処理やめぴ
+//     }
+//     return true;//エラーなかったら、何事もなかったかのように澄まし顔
+// }
 
 
 
