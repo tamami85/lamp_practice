@@ -23,8 +23,7 @@ is_valid_csrf_token($post_token);//ポストで来たトークンをバリデす
 $history = get_post('history');//履歴ボタンはちゃんと押されてるんか？
 is_valid_user_id($user);//$userつまり$user_idがちゃんと飛んできてるかチェック
 
-$carts = get_user_carts($db, $user['user_id']);
-
+$carts = get_user_carts($db, $user['user_id']);//カート内に何が入ってるか配列で取得
 
 if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきたトークンがバリデしたけどfalseで返してきよったら（つまりポストされたやつとセッションに入ってるやつが一致せんかったら
   set_error('不正な処理が行われました');//セッション箱のエラーのとこに入れる
@@ -36,8 +35,10 @@ if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきた�
     set_error('商品が購入できませんでした。');
     redirect_to(CART_URL);
   }
-  //履歴と明細のインサート
+
   insert_historical_transaction($db, $date, $user_id, $history_id, $item_id, $price, $amount);
+  
+
 
   if(is_admin($user)){//もし管理者がログインしてたら
     $admin_purchase_history = admin_get_purchase_history($db);//取得した配列に$admin_purchase_historyっていうあだ名つける

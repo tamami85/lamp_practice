@@ -2,6 +2,8 @@
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
 require_once MODEL_PATH . 'cart.php';
+require_once MODEL_PATH . 'purchase_history.php';
+
 
 // order_detailsテーブルに値を入れていく
 function add_order_details($db, $history_id, $item_id, $price, $amount){
@@ -90,13 +92,21 @@ function admin_get_total_price($db, $history_id){
 
 //トランザクションで購入履歴と購入明細を同時にインサート
 function insert_historical_transaction($db, $date, $user, $history_id, $item_id, $price, $amount){//
-    put_in_variables($db, $user);//変数に何が入るんかこの関数で定義
-    $db->beginTransaction();//トランザクション開始
-    if(add_purchase_history($db, $date, $user)
-        && add_order_details($db, $history_id, $item_id, $price, $amount) 
-       ){//購入履歴に値入れて、かつ、購入明細に値入れる
-      $db->commit();//コミットさん
-      return true;//できたな、おめ
+    $carts = get_user_carts($db, $user['user_id']);
+    foreach($carts as $value){
+        $item_id = $value['item_id'];
+        $price = $value['price'];
+        $amount = $value['amount'];
+        
+        $date = date("Y-m-d H:i:s");
+        //履歴と明細のインサート
+        $db->beginTransaction();//トランザクション開始
+        if(add_purchase_history($db, $date, $user)
+            && add_order_details($db, $history_id, $item_id, $price, $amount) 
+        ){//購入履歴に値入れて、かつ、購入明細に値入れる
+            $db->commit();//コミットさん
+            return true;//できたな、おめ
+        }
     }
     $db->rollback();//振り出しに戻る
     return false;//処理やめぴ
@@ -119,7 +129,7 @@ function validate_order_details($order_details){//購商品明細のバリデ関
 // }
 
 function put_in_variables($db, $user){
-    $carts = get_user_carts($db, $user);
+    $carts = get_user_carts($db, $user['user_id']);
     foreach($carts as $value){
         $item_id = $value['item_id'];
         $price = $value['price'];

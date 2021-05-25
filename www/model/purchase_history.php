@@ -19,7 +19,7 @@ function add_purchase_history($db, $date, $user){
 }
 
 // purchase_historyテーブルを表示する
-function get_purchase_history($db, $user_id){
+function get_purchase_history($db, $user){
     $sql = "
             SELECT
                 history_id,
