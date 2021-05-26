@@ -33,35 +33,27 @@ if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきた�
   redirect_to(LOGIN_URL);//ログインページに戻らせる
 } else {
 
+  $db->beginTransaction();//トランザクション開始
   if(purchase_carts($db, $carts) === false){
     set_error('商品が購入できませんでした。');
     redirect_to(CART_URL);
   }
 
-  add_purchase_history($db, $user_id);//まず購入履歴に値を入れる
+  insert_history($db, $user_id, $carts);//商品履歴と商品明細に値入れる
 
-  $purchase_history = get_purchase_history($db, $user_id);//購入履歴を配列で持ってくる
-print_r($purchase_history);
-  insert_order_details($db);//からの商品明細に値入れる
-  
-
-
-  if(is_admin($user)){//もし管理者がログインしてたら
-    $admin_purchase_history = admin_get_purchase_history($db);//取得した配列に$admin_purchase_historyっていうあだ名つける
-    validate_purchase_history($admin_purchase_history);//バリデ
-  }else{//管理者以外がログインしてたら
-    $purchase_history = get_purchase_history($db, $user_id);//取得した配列に$purchase_historyっていうあだ名つける
-    validate_purchase_history($purchase_history);//バリデ
+  if(isset($_SESSION['__errors']) === false || count($_SESSION['__errors']) === 0){//エラーがなかったら
+    $db->commit();//コミットちゃん
+  }else{
+    $db->rollback();//振り出しに戻る
   }
-  
-$_SESSION['csrf_token'] = '';//トークンの破棄
-get_csrf_token();//トークンまた新しく作る
+
+
+  $_SESSION['csrf_token'] = '';//トークンの破棄
+  get_csrf_token();//トークンまた新しく作る
 }
 
 
 $total_price = sum_carts($carts);
-
-
 
 
 

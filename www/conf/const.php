@@ -21,6 +21,8 @@ define('HOME_URL', '/index.php');//行きたいディレクトリにあだ名付
 define('CART_URL', '/cart.php');//行きたいディレクトリにあだ名付けてる
 define('FINISH_URL', '/finish.php');//行きたいディレクトリにあだ名付けてる
 define('ADMIN_URL', '/admin.php');//行きたいディレクトリにあだ名付けてる
+define('PURCHASE_URL', '/show_purchase_history.php');//行きたいディレクトリにあだ名付けてる
+define('ORDER_URL', '/show_order_details.php');//行きたいディレクトリにあだ名付けてる
 
 define('REGEXP_ALPHANUMERIC', '/\A[0-9a-zA-Z]+\z/');//バリデのもと
 define('REGEXP_POSITIVE_INTEGER', '/\A([1-9][0-9]*|0)\z/');//バリデのもと
