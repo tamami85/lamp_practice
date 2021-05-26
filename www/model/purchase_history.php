@@ -4,9 +4,10 @@ require_once MODEL_PATH . 'db.php';
 
 
 // purchase_historyテーブルにデータを新規登録する
-function add_purchase_history($db, $date, $user_id){
+function add_purchase_history($db, $user_id){
+    $date = date("Y-m-d H:i:s");
     $sql = "
-            INSERT IMTO
+            INSERT INTO
                 purchase_history(
                     created,
                     user_id
@@ -18,54 +19,73 @@ function add_purchase_history($db, $date, $user_id){
     return execute_query($db, $sql, $params);
 }
 
-
-// purchase_historyテーブルを表示する
-function get_purchase_history($db, $user_id){
+// 管理者用の配列取得。合計金額の計算と注文番号と購入日時
+function admin_get_history_data($db){
     $sql = "
-            SELECT
-                history_id,
-                created,
-                user_id
-            FROM
-                purchase_history
-            WHERE
-                user_id = ?
-            ";
+        SELECT
+            SUM(price * amount) AS total_price,
+            purchase_history.history_id AS history_number,
+            purchase_history.created
+        FROM
+            purchase_history
+        LEFT OUTER JOIN
+            order_details
+        ON
+            purchase_history.history_id = order_details.history_id
+        GROUP BY
+            purchase_history.history_id
+        ORDER BY
+            created DESC
+    ";
+    return fetch_all_query($db, $sql);
+}
+
+//一般用の合計金額の計算と注文番号と購入日時
+function get_history_data($db, $user_id){//関数名は変更する
+    $sql = "
+        SELECT
+            SUM(price * amount) AS total_price,
+            purchase_history.history_id AS history_number,
+            purchase_history.created
+        FROM
+            purchase_history
+        LEFT OUTER JOIN
+            order_details
+        ON
+            purchase_history.history_id = order_details.history_id
+        WHERE
+            user_id = ?
+        GROUP BY
+            purchase_history.history_id
+        ORDER BY
+            created DESC
+        ";//
+        //total_priceって名前で価格とかった量の合計を計算する
+        //history_numberって名前で明細のhistory_idを呼ぶ
+        //日付を取得
     $params = array($user_id);
     return fetch_all_query($db, $sql, $params);
 }
 
-// 全部見られる管理者用の購入履歴
-function admin_get_purchase_history($db){
-    $sql = "
-            SELECT
-                history_id,
-                created,
-                user_id
-            FROM
-                purchase_history
-            ";
-    return fetch_all_query($db, $sql);
+//管理者用購入履歴の配列にあだ名つける
+function admin_validate_history($admin_history_data){//購商品履歴のバリデ関数
+    if(count($admin_history_data) === 0){//履歴が空やったら
+      set_error('購入履歴を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+      return false;//処理やめぴ
+    }
+    return true;//エラーなかったら、何事もなかったかのように澄まし顔
+}
+
+//の購入履歴の配列にあだ名つける
+function validate_history($history_data){//購商品履歴のバリデ関数
+    if(count($history_data) === 0){//履歴が空やったら
+      set_error('購入履歴を取得できませんでした。');//セッション箱にエラーメッセージ入れる
+      return false;//処理やめぴ
+    }
+    return true;//エラーなかったら、何事もなかったかのように澄まし顔
 }
 
 
 
 
 
-
-
-// どこに置くのか後で考えまひょ
-
-// 画面上部に該当の「注文番号」「購入日時」を表示する。
-// $purchase_history = get_purchase_history($db, $user_id);
-// foreach($purchase_history[0] as $value){
-//     $value['history_id'];
-//     $value['created'];
-// }
-
-//画面上部に該当の「注文番号」「購入日時」を表示する。（管理者用）
-// $admin_purchase_history = admin_get_purchase_history($db)
-// foreach($admin_purchase_history[0] as $value){
-//     $value['history_id'];
-//     $value['created'];
-// }

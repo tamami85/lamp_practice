@@ -43,7 +43,7 @@ function execute_query($db, $sql, $params = array()){//insert文とupdate文で�
     $statement = $db->prepare($sql);//データベースに$sqlを命令する準備して、$statementっていうあだ名つける
     return $statement->execute($params);//$sqlの命令を実行する。これが戻り値。その時、プレースホルダーがあるならは$paramsに連想配列でぶちこまれる
   }catch(PDOException $e){//あら残念エラーやったら
-    set_error('更新に失敗しました。');//「エラーかましてきたらどうすんの？関数（function.php内）」使って、セッション箱に入れる
+    set_error('更新に失敗しました。' . $e);//「エラーかましてきたらどうすんの？関数（function.php内）」使って、セッション箱に入れる
   }
   return false;//処理やめぴ
 }

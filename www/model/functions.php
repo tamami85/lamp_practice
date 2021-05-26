@@ -106,8 +106,6 @@ function delete_image($filename){//イメージを消す関数
   
 }
 
-
-
 function is_valid_length($string, $minimum_length, $maximum_length = PHP_INT_MAX){//文字数をバリデ
   $length = mb_strlen($string);//何かしら（$string）の文字数数えて、あだ名つける
   return ($minimum_length <= $length) && ($length <= $maximum_length);//文字数は$length以上でも以下でもあかんで
@@ -159,5 +157,15 @@ function is_valid_csrf_token($token){
   }
   return $token === get_session('csrf_token');
 }
+
+// hiddenの$userがちゃんと飛んできてるかチェック
+function is_valid_user_id($user){
+  if($user === '') {
+    return false;
+  }
+  return $user;
+}
+
+
 
 
