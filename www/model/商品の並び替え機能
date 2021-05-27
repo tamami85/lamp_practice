@@ -1,0 +1,69 @@
+新着順
+function new_arrival()
+SELECT
+	item_id,
+    name,
+    price,
+    image,
+    status,
+    created
+FROM
+	items
+ORDER BY
+	created DESC
+
+
+価格の安い順
+function cost_asc()
+SELECT
+	item_id,
+    name,
+    price,
+    image,
+    status,
+    created
+FROM
+	items
+ORDER BY
+	price
+
+
+価格の高い順
+function cost_desc()
+SELECT
+	item_id,
+    name,
+    price,
+    image,
+    status,
+    created
+FROM
+	items
+ORDER BY
+	price DESC
+
+
+
+VIEW側に置くもの
+<form method="get">
+    <select name="choices" required>
+        <option value="0" selected>新着順</option>
+        <option value="1">価格の安い順&restroom</option>
+        <option value="2">価格の高い順</option>
+    </select>
+    <input type="submit" name="sort" value="並べ替え">
+</form>
+
+controler側に置くもの
+$sort = get_get('sort');
+if($sort === 0){
+    new_arrival();
+}
+if($sort === 1){
+    cost_asc();
+}
+if($sort === 2){
+    cost_desc();
+}
+
+

@@ -32,8 +32,8 @@ if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきた�
   // 明細の一覧表示(表示項目は「商品名」「購入時の商品価格」「購入数」「小計」とする。)
   $order_details = get_order_details($db, $history_id);//配列で明細を一気に取得してる
 
-$_SESSION['csrf_token'] = '';//トークンの破棄
-get_csrf_token();//トークンまた新しく作る
+  $_SESSION['csrf_token'] = '';//トークンの破棄
+  get_csrf_token();//トークンまた新しく作る
 }
 
 
