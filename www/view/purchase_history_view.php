@@ -27,6 +27,7 @@
                 <form method="post" action="show_order_details.php">
                     <input type="submit" value="購入明細">
                     <input type="hidden" name="history_id" value="<?php print h($value['history_number']); ?>">
+                    <input type="hidden" name="token" value="<?php print $token; ?>">
                 </form>
             </td>
         </tr>
@@ -41,6 +42,7 @@
                 <form method="post" action="show_order_details.php">
                     <input type="submit" value="購入明細">
                     <input type="hidden" name="history_id" value="<?php print h($value['history_number']); ?>">
+                    <input type="hidden" name="token" value="<?php print $token; ?>">
                 </form>
             </td>
         </tr>

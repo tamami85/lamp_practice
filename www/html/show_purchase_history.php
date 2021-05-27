@@ -14,6 +14,7 @@ if(is_logined() === false){
 $db      = get_db_connect();
 $user    = get_login_user($db);
 $user_id = $user['user_id'];
+$token = get_csrf_token();//ビュー側でvalueに入ってる$tokenを作った
 
 if(is_admin($user)){//もし管理者がログインしてたら
     $admin_history_data = admin_get_history_data($db);//購入履歴の「注文番号」「購入日時」「該当の注文の合計金額」を配列で取得してあだ名つける
