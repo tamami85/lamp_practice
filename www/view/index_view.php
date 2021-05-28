@@ -13,10 +13,25 @@
   <div class="container">
     <h1>商品一覧</h1>
     <?php include VIEW_PATH . 'templates/messages.php'; ?>
+    <form method="get">
+      <select name="choices" required>
+          <option value="created DESC" selected>新着順</option>
+          <option value="price">価格の安い順</option>
+          <option value="price DESC">価格の高い順</option>
+      </select>
+      <input type="submit" name="sort" value="並べ替え">
+    </form>
 
     <div class="card-deck">
       <div class="row">
-      <?php foreach($items as $item){ ?>
+
+      <?php if(isset($_GET['sort']) === true){ ?>
+        <?php $item_array = change_sort($db, $choices); ?>
+      <?php }else{ ?>
+        <?php $item_array = get_open_items($db); ?>
+      <?php } ?>
+
+      <?php foreach($item_array as $item){ ?>
         <div class="col-6 item">
           <div class="card h-100 text-center">
             <div class="card-header">
@@ -39,7 +54,7 @@
             </figure>
           </div>
         </div>
-      <?php } ?>
+        <?php } ?>
       </div>
     </div>
   </div>
