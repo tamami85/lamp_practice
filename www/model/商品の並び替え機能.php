@@ -1,48 +1,7 @@
 <?php
 
 
-全部
-function 
-$sql = "
-        SELECT
-            item_id,
-            name,
-            price,
-            image,
-            status,
-            created
-        FROM
-            items
-        ORDER BY
-            {$sort}
-        ";
-        // if($sort === "created DESC"){
-        //     $sql .= "
-        //             ORDER BY
-        //                 created DESC
-        //             ";
-        // //新着順
-        // } else if($sort === 1){
-        //     $sql .= "
-        //             ORDER BY
-        //                 price
-        //             ";
-        // //安い順
-        // } else if($sort === 2){
-        //     $sql .= "
-        //             ORDER BY
-        //                 price DESC
-        //             ";
-        // //高い順 
-        // }
              
-fetch_all_query($db, $sql);
-
-if($sort !== "created DESC" || $sort !== "price" || $sort !== "priceDESC"){
-    set_error('選択が正しくありません。');
-  }
-
-
 新着順
 function new_arrival($db)
 $sql = "
@@ -97,17 +56,6 @@ $sql = "
         ";
 fetch_all_query($db, $sql);
 
-
-VIEW側に置くもの
-<form method="get">
-    <select name="choices" required>
-        <option value="">選択してください</option>
-        <option value="created DESC" selected>新着順</option>
-        <option value="price">価格の安い順</option>
-        <option value="price DESC">価格の高い順</option>
-    </select>
-    <button type="submit" name="sort" value="並べ替え">
-</form>
 
 controler側に置くもの
 $sort = get_get('sort');
@@ -186,7 +134,7 @@ VIEW側に置くもの
     <select name="choices" required>
         <option value="">選択してください</option>
         <option value="0" selected>新着順</option>
-        <option value="1">価格の安い順&restroom</option>
+        <option value="1">価格の安い順/option>
         <option value="2">価格の高い順</option>
     </select>
     <button type="submit" name="sort" value="並べ替え">
@@ -211,12 +159,3 @@ window.addEventListener('DOMContentLoaded', function(){
 	});
 });
 
-<?php
-
-echo <<<EOM
-<script type="text/javascript">
-    Document.write(choices.value);
-</script>
-EOM;
-
-?>

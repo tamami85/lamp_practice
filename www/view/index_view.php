@@ -13,8 +13,9 @@
   <div class="container">
     <h1>商品一覧</h1>
     <?php include VIEW_PATH . 'templates/messages.php'; ?>
+
     <form method="get">
-      <select name="choices" required>
+      <select id="choices" name="choices" required>
           <option value="created DESC" selected>新着順</option>
           <option value="price">価格の安い順</option>
           <option value="price DESC">価格の高い順</option>
@@ -22,6 +23,15 @@
       <input type="submit" name="sort" value="並べ替え">
     </form>
 
+    <script>
+      window.onload=function(){
+        let choices=document.getElementById('choices');
+        choices.addEventListener('change', function(){
+          location.href='index.php?sort=並べ替え&choices='+this.value;
+        },false)
+      }
+    
+    </script>
     <div class="card-deck">
       <div class="row">
 
