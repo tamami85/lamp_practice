@@ -225,8 +225,8 @@ function change_sort($db, $choices){
 }
 
 function choices_valid($choices){
-  if($choices !== "created DESC" || $choices !== "price" || $choices !== "price DESC"){
-    set_error('選択が正しくありません。');
+  if($choices !== "created DESC" && $choices !== "price" && $choices !== "price DESC"){
+    set_error('選択が正しくありません。' . $choices);
   }
 }
 
