@@ -14,6 +14,9 @@ $db = get_db_connect();
 $user = get_login_user($db);
 $token = get_csrf_token();//ビュー側でvalueに入ってる$tokenを作った
 
-$items = get_open_items($db);
+// $items = get_open_items($db);
+$choices = get_get('choices');
+choices_valid($choices);
+
 
 include_once VIEW_PATH . 'index_view.php';

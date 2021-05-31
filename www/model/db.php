@@ -33,7 +33,7 @@ function fetch_all_query($db, $sql, $params = array()){//select文でデータ�
     $statement->execute($params);//$sqlの命令を実行する。その時、プレースホルダーがあるなら$paramsに連想配列でぶちこまれる
     return $statement->fetchAll();//該当するデータを全部配列にして返す。エラーじゃなかったらここで処理ストップ
   }catch(PDOException $e){//あら残念エラーやったら
-    set_error('データ取得に失敗しました。');//「エラーかましてきたらどうすんの？関数（function.php内）」使って、セッション箱に入れる
+    set_error('データ取得に失敗しました。' . $e);//「エラーかましてきたらどうすんの？関数（function.php内）」使って、セッション箱に入れる
   }
   return false;//処理やめぴ
 }

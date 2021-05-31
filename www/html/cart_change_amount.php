@@ -32,8 +32,8 @@ if(is_valid_csrf_token(get_post('token')) === false){//ポストされてきた�
     set_error('購入数の更新に失敗しました。');
   }
 
-$_SESSION['csrf_token'] = '';//トークンの破棄
-get_csrf_token();//トークンまた新しく作る
+  $_SESSION['csrf_token'] = '';//トークンの破棄
+  get_csrf_token();//トークンまた新しく作る
 }
 
 redirect_to(CART_URL);

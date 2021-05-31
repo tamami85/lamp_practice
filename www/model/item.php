@@ -206,3 +206,28 @@ function is_valid_item_status($status){//ステータスのバリデ
   }
   return $is_valid;//あんた合格！
 }
+
+function change_sort($db, $choices){
+  $sql = "
+          SELECT
+            item_id, 
+            name,
+            stock,
+            price,
+            image,
+            status
+          FROM
+            items
+          ORDER BY
+            {$choices}
+        ";
+  return fetch_all_query($db, $sql);
+}
+
+function choices_valid($choices){
+  if($choices !== "created DESC" || $choices !== "price" || $choices !== "price DESC"){
+    set_error('選択が正しくありません。');
+  }
+}
+
+
